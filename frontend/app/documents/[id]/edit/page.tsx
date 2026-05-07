@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import EditNdaClient from "@/components/EditNdaClient";
-import { getDocument, getLatestVersion, parseVersionData } from "@/lib/repo";
+import { getDocumentDetail } from "@/lib/repo";
 
 export const dynamic = "force-dynamic";
 
@@ -8,11 +8,10 @@ export default async function EditDocumentPage(
   props: PageProps<"/documents/[id]/edit">,
 ) {
   const { id } = await props.params;
-  const doc = getDocument(id);
-  const latest = doc ? getLatestVersion(id) : undefined;
-  if (!doc || !latest) notFound();
-
-  const defaults = parseVersionData(latest);
+  const detail = await getDocumentDetail(id);
+  if (!detail) notFound();
+  const { document: doc, latest_version: latest } = detail;
+  const defaults = latest.data;
 
   return (
     <div className="space-y-6">
