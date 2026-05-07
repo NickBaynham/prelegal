@@ -1,28 +1,25 @@
 "use client";
 
-import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
+import {
+  useForm,
+  useWatch,
+  type SubmitHandler,
+  type UseFormReturn,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { ndaSchema, type NdaFormValues } from "@/lib/schema";
+import { baseDefaults, blankParty, ndaSchema, type NdaFormValues } from "@/lib/schema";
 
 type Props = {
   defaultValues?: Partial<NdaFormValues>;
   submitLabel: string;
   onSubmit: (values: NdaFormValues) => Promise<{ error: string } | void>;
-};
-
-const blankParty = { printName: "", title: "", company: "", noticeAddress: "", signedDate: "" };
-
-const baseDefaults: NdaFormValues = {
-  title: "",
-  purpose: "Evaluating whether to enter into a business relationship with the other party.",
-  effectiveDate: new Date().toISOString().slice(0, 10),
-  mndaTerm: { type: "expires", years: 1 },
-  termOfConfidentiality: { type: "years", years: 1 },
-  governingLaw: "",
-  jurisdiction: "",
-  modifications: "",
-  parties: [blankParty, blankParty],
+  /**
+   * Optional external form instance. When provided, NdaForm renders against it
+   * instead of creating its own. Used by ChatNdaClient so the chat panel can
+   * push AI-extracted values into the same form via setValue.
+   */
+  form?: UseFormReturn<NdaFormValues>;
 };
 
 function mergeDefaults(partial?: Partial<NdaFormValues>): NdaFormValues {
@@ -37,11 +34,12 @@ function mergeDefaults(partial?: Partial<NdaFormValues>): NdaFormValues {
   };
 }
 
-export default function NdaForm({ defaultValues, submitLabel, onSubmit }: Props) {
-  const form = useForm<NdaFormValues>({
+export default function NdaForm({ defaultValues, submitLabel, onSubmit, form: externalForm }: Props) {
+  const internalForm = useForm<NdaFormValues>({
     resolver: zodResolver(ndaSchema),
     defaultValues: mergeDefaults(defaultValues),
   });
+  const form = externalForm ?? internalForm;
   const [submitError, setSubmitError] = useState<string | null>(null);
   const { register, handleSubmit, control, formState } = form;
   const mndaTermType = useWatch({ control, name: "mndaTerm.type" });

@@ -32,3 +32,23 @@ export const ndaSchema = z.object({
 
 export type NdaFormValues = z.infer<typeof ndaSchema>;
 export type Party = z.infer<typeof partySchema>;
+
+export const blankParty: Party = {
+  printName: "",
+  title: "",
+  company: "",
+  noticeAddress: "",
+  signedDate: "",
+};
+
+export const baseDefaults: NdaFormValues = {
+  title: "",
+  purpose: "Evaluating whether to enter into a business relationship with the other party.",
+  effectiveDate: new Date().toISOString().slice(0, 10),
+  mndaTerm: { type: "expires", years: 1 },
+  termOfConfidentiality: { type: "years", years: 1 },
+  governingLaw: "",
+  jurisdiction: "",
+  modifications: "",
+  parties: [blankParty, blankParty],
+};

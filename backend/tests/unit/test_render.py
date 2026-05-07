@@ -112,3 +112,11 @@ def test_unsigned_party_uses_underline_placeholder():
 def test_invalid_year_count_rejected_by_model():
     with pytest.raises(Exception):
         make_values(mndaTerm={"type": "expires", "years": 99})
+
+
+def test_invalid_calendar_date_rejected_by_model():
+    """`2026-02-30` matches the regex but isn't a real date."""
+    with pytest.raises(Exception):
+        make_values(effectiveDate="2026-02-30")
+    with pytest.raises(Exception):
+        make_values(effectiveDate="2026-13-01")
