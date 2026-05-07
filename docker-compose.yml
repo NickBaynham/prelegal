@@ -13,6 +13,8 @@ services:
       TEMPLATES_DIR: /app/templates
       CATALOG_PATH: /app/catalog.json
       CORS_ORIGINS: http://localhost:3000
+      # Optional. When unset, /chat returns 503 and the UI shows a degraded banner.
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s

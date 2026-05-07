@@ -3,8 +3,10 @@
 ## Next up
 - Wire the catalog into the UI so users can pick a template (currently the form
   hard-codes the Mutual NDA).
-- Implement chat-driven field filling using the Cerebras / OpenRouter skill.
 - Add authentication and per-user document scoping (V1 is single-user).
+- Persist chat sessions/messages in SQLite so a refresh restores the
+  conversation (today only the form values survive a refresh).
+- Apply the brand color tokens (Accent Gold, Blue Primary, etc.) globally.
 
 ## Performance / hardening (deferred from SCRUM-4 review)
 - `repo.get_document_detail` makes two SQLite round-trips (`get_document`

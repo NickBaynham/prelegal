@@ -74,7 +74,7 @@ runtime:
 | `CORS_ORIGINS`       | backend   | `http://localhost:3000`  | Comma-separated allow list               |
 | `NEXT_PUBLIC_API_URL`| frontend  | `http://localhost:8000`  | Browser-visible backend URL              |
 | `INTERNAL_API_URL`   | frontend  | (falls back to public)   | Server-side backend URL (Docker network) |
-| `OPENROUTER_API_KEY` | backend   | unset                    | Reserved for AI features (not yet used)  |
+| `OPENROUTER_API_KEY` | backend   | unset                    | Enables the AI chat assistant (degrades gracefully when unset) |
 
 ## License
 

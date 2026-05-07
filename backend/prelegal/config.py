@@ -16,6 +16,7 @@ class Settings:
     templates_dir: Path
     catalog_path: Path
     cors_origins: tuple[str, ...]
+    openrouter_api_key: str | None = None
 
 
 def load_settings() -> Settings:
@@ -28,4 +29,5 @@ def load_settings() -> Settings:
             for origin in os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
             if origin.strip()
         ),
+        openrouter_api_key=os.environ.get("OPENROUTER_API_KEY") or None,
     )
