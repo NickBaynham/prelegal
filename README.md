@@ -1,48 +1,88 @@
-# prelegal
+# PreLegal
 
-A web application built with a FastAPI (Python) backend and a Next.js (TypeScript/React) frontend.
+A SaaS for drafting legal agreements from open-source templates. V1 supports the
+Common Paper Mutual Non-Disclosure Agreement; additional templates are
+catalogued in [`catalog.json`](catalog.json) and will be wired into the UI in
+future iterations.
 
-## Tech Stack
+## Architecture
 
-- **Backend:** [FastAPI](https://fastapi.tiangolo.com/) (Python)
-- **Frontend:** [Next.js](https://nextjs.org/) (React + TypeScript)
-
-## Project Structure
+- **Backend:** FastAPI service backed by SQLite. Owns rendering and persistence.
+- **Frontend:** Next.js 16 (App Router) UI. Talks to the backend over HTTP.
+- **Docker Compose:** runs the two services together with a named SQLite volume
+  so data survives container restarts.
 
 ```
 prelegal/
-├── backend/      # FastAPI application
-└── frontend/     # Next.js application
+├── backend/      # FastAPI + SQLite (pdm)
+├── frontend/     # Next.js 16 (App Router, TypeScript)
+├── templates/    # Markdown legal templates (Common Paper)
+├── catalog.json  # Catalog of available templates
+├── scripts/      # Per-OS docker start/stop helpers
+└── Makefile      # Dev tasks (setup, lint, test, build, run, docker-up/down)
 ```
 
-## Getting Started
+## Quick start (Docker)
 
-### Backend
-
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+```
+make docker-up
 ```
 
-The API will be available at `http://localhost:8000`. Interactive docs at `http://localhost:8000/docs`.
+- Frontend: <http://localhost:3000>
+- Backend:  <http://localhost:8000>
+- API docs: <http://localhost:8000/docs>
 
-### Frontend
+Stop with `make docker-down`. SQLite data lives in the `prelegal_data` volume.
 
-```bash
-cd frontend
-npm install
-npm run dev
+## Local development
+
+Install dependencies once:
+
+```
+make setup
 ```
 
-The web app will be available at `http://localhost:3000`.
+Run both services with hot reload (no Docker):
 
-## Environment Variables
+```
+make run
+```
 
-Copy `.env.example` to `.env.local` (frontend) and `.env` (backend) and fill in the required values.
+Run all tests:
+
+```
+make test            # backend pytest + frontend vitest
+make frontend-test-e2e   # Playwright (requires `npx playwright install chromium` once)
+```
+
+Lint:
+
+```
+make lint
+```
+
+## Configuration
+
+Copy `.env.example` to `.env` and adjust as needed. Variables consumed at
+runtime:
+
+| Variable             | Component | Default                  | Purpose                                  |
+| -------------------- | --------- | ------------------------ | ---------------------------------------- |
+| `DATABASE_PATH`      | backend   | `backend/data/prelegal.db` | SQLite file location                     |
+| `TEMPLATES_DIR`      | backend   | `templates/`             | Markdown template root                   |
+| `CATALOG_PATH`       | backend   | `catalog.json`           | Catalog descriptor                       |
+| `CORS_ORIGINS`       | backend   | `http://localhost:3000`  | Comma-separated allow list               |
+| `NEXT_PUBLIC_API_URL`| frontend  | `http://localhost:8000`  | Browser-visible backend URL              |
+| `INTERNAL_API_URL`   | frontend  | (falls back to public)   | Server-side backend URL (Docker network) |
+| `OPENROUTER_API_KEY` | backend   | unset                    | Reserved for AI features (not yet used)  |
 
 ## License
 
-[MIT](LICENSE)
+MIT — see [LICENSE](LICENSE). Document templates remain under the original
+Common Paper CC BY 4.0 license.
+
+## Further reading
+
+- [Backend service](backend/README.md)
+- [Change log](CHANGELOG.md)
+- [Roadmap / TODO](TODO.md)

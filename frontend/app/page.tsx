@@ -3,8 +3,8 @@ import { listDocuments } from "@/lib/repo";
 
 export const dynamic = "force-dynamic";
 
-export default function Home() {
-  const documents = listDocuments();
+export default async function Home() {
+  const documents = await listDocuments();
 
   return (
     <div className="space-y-6">

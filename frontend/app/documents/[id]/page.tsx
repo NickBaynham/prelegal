@@ -2,15 +2,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import NdaDocument from "@/components/NdaDocument";
 import DocumentActions from "@/components/DocumentActions";
-import { getDocument, getLatestVersion } from "@/lib/repo";
+import { getDocumentDetail } from "@/lib/repo";
 
 export const dynamic = "force-dynamic";
 
 export default async function DocumentPage(props: PageProps<"/documents/[id]">) {
   const { id } = await props.params;
-  const doc = getDocument(id);
-  const latest = doc ? getLatestVersion(id) : undefined;
-  if (!doc || !latest) notFound();
+  const detail = await getDocumentDetail(id);
+  if (!detail) notFound();
+  const { document: doc, latest_version: latest } = detail;
 
   return (
     <div className="space-y-6">

@@ -8,9 +8,9 @@ export default async function VersionsPage(
   props: PageProps<"/documents/[id]/versions">,
 ) {
   const { id } = await props.params;
-  const doc = getDocument(id);
+  const doc = await getDocument(id);
   if (!doc) notFound();
-  const versions = listVersions(id);
+  const versions = await listVersions(id);
 
   return (
     <div className="space-y-6">

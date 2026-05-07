@@ -9,8 +9,15 @@ export async function GET(
   ctx: RouteContext<"/api/documents/[id]/versions/[vId]/pdf">,
 ) {
   const { id, vId } = await ctx.params;
-  const doc = getDocument(id);
-  const version = doc ? getVersion(id, vId) : undefined;
+
+  let doc, version;
+  try {
+    doc = await getDocument(id);
+    version = doc ? await getVersion(id, vId) : undefined;
+  } catch (err) {
+    console.error("Document fetch failed", err);
+    return NextResponse.json({ error: "Backend unavailable" }, { status: 502 });
+  }
   if (!doc || !version) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }

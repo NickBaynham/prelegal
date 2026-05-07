@@ -6,14 +6,10 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
 parts/
 sdist/
 var/
@@ -23,6 +19,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+# (Intentionally not ignoring `lib/`, `build/`, `dist/`, `lib64/` — they
+#  collide with frontend source directories like frontend/lib/.)
 
 # Virtual environments
 .venv
@@ -79,10 +77,6 @@ node_modules/
 out/
 next-env.d.ts
 
-# Production builds
-build/
-dist/
-
 # Misc
 *.tsbuildinfo
 .turbo/
@@ -107,6 +101,18 @@ lerna-debug.log*
 *.sqlite
 *.sqlite3
 *.db
+*.db-shm
+*.db-wal
+
+# ---------- Backend test/build dirs ----------
+backend/data/
+backend/.venv/
+backend/.pdm-python
+
+# ---------- Frontend test artifacts ----------
+frontend/test-results/
+frontend/playwright-report/
+frontend/tests/e2e/.tmp/
 
 # ---------- Editors / OS ----------
 .vscode/

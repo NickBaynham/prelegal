@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["better-sqlite3", "puppeteer"],
+  output: "standalone",
+  serverExternalPackages: ["puppeteer"],
 };
 
 export default nextConfig;

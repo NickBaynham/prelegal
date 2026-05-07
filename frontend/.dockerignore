@@ -1,0 +1,10 @@
+.next/
+node_modules/
+data/
+tests/
+test-results/
+playwright-report/
+.env*
+!.env.example
+README.md
+*.log

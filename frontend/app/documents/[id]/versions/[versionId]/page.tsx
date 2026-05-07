@@ -10,8 +10,8 @@ export default async function VersionPage(
   props: PageProps<"/documents/[id]/versions/[versionId]">,
 ) {
   const { id, versionId } = await props.params;
-  const doc = getDocument(id);
-  const version = doc ? getVersion(id, versionId) : undefined;
+  const doc = await getDocument(id);
+  const version = doc ? await getVersion(id, versionId) : undefined;
   if (!doc || !version) notFound();
 
   return (

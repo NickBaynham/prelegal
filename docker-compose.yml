@@ -1,0 +1,42 @@
+services:
+  backend:
+    build: ./backend
+    image: prelegal-backend:dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - prelegal_data:/data
+      - ./templates:/app/templates:ro
+      - ./catalog.json:/app/catalog.json:ro
+    environment:
+      DATABASE_PATH: /data/prelegal.db
+      TEMPLATES_DIR: /app/templates
+      CATALOG_PATH: /app/catalog.json
+      CORS_ORIGINS: http://localhost:3000
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # NEXT_PUBLIC_* must be set at build time (inlined into the bundle).
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    image: prelegal-frontend:dev
+    ports:
+      - "3000:3000"
+    environment:
+      # Server-side code (server components, server actions, API routes)
+      # uses the compose network hostname.
+      INTERNAL_API_URL: http://backend:8000
+      HOSTNAME: 0.0.0.0
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  prelegal_data:
